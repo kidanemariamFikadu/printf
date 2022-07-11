@@ -1,4 +1,5 @@
 #include "main.h"
+#include <stdlib>
 
 /**
  * _printf - formatted output conversion and print data.
@@ -12,11 +13,10 @@ int _printf(const char *format, ...)
 	char *buffer;
 
 	va_start(arguments, format), buffer = malloc(sizeof(char) * 1024);
-	if (!format || !buffer || (format[i] == '%' && !format[i + 1]))
+
+	if (!format || !buffer || (format[0] == '%' && format[1] == '\0'))
 		return (-1);
-	if (!format[i])
-		return (0);
-	for (i = 0; format && format[i]; i++)
+	for (i = 0; format[i] !=  '\0'; i++)
 	{
 		if (format[i] == '%')
 		{
