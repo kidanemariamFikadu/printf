@@ -7,8 +7,9 @@
  */
 int _printf(const char *format, ...)
 {
-	unsigned int i = 0, len = 0;
+	unsigned int i = 0, len = 0, ibuf = 0;
 	va_list arguments;
+	int (*function)(va_list, char *, unsigned int);
 	char *buffer;
 
 	va_start(arguments, format), buffer = malloc(sizeof(char) * 1024);
@@ -22,16 +23,25 @@ int _printf(const char *format, ...)
 		{
 			if (format[i + 1] == '\0')
 			{
-				free(buffer);
+				print_buf(buffer, ibuf), free(buffer), va_end(arguments);
 				return (-1);
 			}
 			else
 			{
-				len++;
+				function = get_print_func(format, i + 1);
+				if (function == NULL)
+				{
+					if (format[i + 1] == ' ' && !format[i + 2])
+						return (-1);
+					handl_buf(buffer, format[i], ibuf), len++, i--;
+				} else
+				{
+					handl_buf(buffer, format[i], ibuf), len++, i--;
+					i += ev_print_func(format, i + 1);
+				}
 			} i++;
 		} else
 			len++;
 	}
-	free(buffer);
 	return (len);
 }
