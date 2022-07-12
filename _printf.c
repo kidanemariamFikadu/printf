@@ -22,7 +22,7 @@ int _printf(const char *format, ...)
 		{
 			if (format[i + 1] == '\0')
 			{
-				free(buffer), va_end(arguments);
+				free(buffer);
 				return (-1);
 			}
 			else
@@ -34,6 +34,6 @@ int _printf(const char *format, ...)
 	}
 
 	free(buffer);
-	va_end(arguments);
+	
 	return (len);
 }
