@@ -1,48 +1,23 @@
 #include "main.h"
+#include <stdio.h>
+#include <stdlib.h>
 
 /**
  * _printf - formated output conversion and print data.
  * @format: input string.
  * Return: number of chars printed.
  */
-int _printf(const char * const format, ...)
+int _printf(const char *format, ...)
 {
-	convert_match m[] = {
-		{"%s", printf_string}, {"%c", printf_char},
-		{"%%", printf_37},
-		{"%i", printf_int}, {"%d", printf_dec}, {"%r", printf_srev},
-		{"%R", printf_rot13}, {"%b", printf_bin}, {"%u", printf_unsigned},
-		{"%o", printf_oct}, {"%x", printf_hex}, {"%X", printf_HEX},
-		{"%S", printf_exclusive_string}, {"%p", printf_pointer}
-	};
-
 	va_list args;
-	int i = 0, j, len = 0;
+	int length = 0;
 
-	va_start(args, format);
-	if (format == NULL || (format[0] == '%' && format[1] == '\0'))
+	if (format == NULL)
 		return (-1);
 
-This:
-	while (format[i] != '\0')
-	{
-		j = 13;
-		while (j >= 0)
-		{
-			if (m[j].id[0] == format[i] && m[j].id[1] == format[i + 1])
-			{
-				len += m[j].f(args);
-				i = i + 2;
-				goto This;
-			}
-			j--;
-		}
-		_putchar(format[i]);
-		len++;
-		i++;
-	}
+	va_start(args, format);
 
+	length = _print_format(format, args);
 	va_end(args);
-
-	return (len);
+	return (length);
 }
