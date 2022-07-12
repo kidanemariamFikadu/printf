@@ -9,15 +9,33 @@
  */
 int _printf(const char *format, ...)
 {
-	va_list args;
-	int length = 0;
+	unsigned int i = 0, len = 0;
+	va_list arguments;
+	char *buffer;
 
-	if (format == NULL)
+	va_start(arguments, format), buffer = malloc(sizeof(char) * 1024);
+	if (!format || !buffer || (format[i] == '%' && !format[i + 1]))
 		return (-1);
+	if (!format[i])
+		return (0);
+	for (i = 0; format && format[i]; i++)
+	{
+		if (format[i] == '%')
+		{
+			if (format[i + 1] == '\0')
+			{
+				free(buffer);
+				return (-1);
+			}
+			else
+			{
+				len++;
+			} i++;
+		} else
+			len++;
+	}
 
-	va_start(args, format);
+	free(buffer);
 
-	length = _print_format(format, args);
-	va_end(args);
-	return (length);
+	return (len);
 }

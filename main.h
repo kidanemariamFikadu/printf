@@ -14,11 +14,11 @@
  * printer functions
  */
 
-typedef struct specifier
+typedef struct print
 {
-	char *specifier;
-	int (*f)(va_list, args);
-} spc_dt;
+	char *type_arg;
+	int (*f)(va_list, char*, unsigned int);
+} print_t;
 
 int _printf(const char *format, ...);
 
