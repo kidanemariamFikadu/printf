@@ -5,35 +5,44 @@
  * @format: input string.
  * Return: number of chars printed.
  */
-int _printf(const char *format, ...)
+int _printf(const char * const format, ...)
 {
-	unsigned int i = 0, len = 0;
-	va_list arguments;
-	char *buffer;
+	convert_match m[] = {
+		{"%s", printf_string}, {"%c", printf_char},
+		{"%%", printf_37},
+		{"%i", printf_int}, {"%d", printf_dec}, {"%r", printf_srev},
+		{"%R", printf_rot13}, {"%b", printf_bin}, {"%u", printf_unsigned},
+		{"%o", printf_oct}, {"%x", printf_hex}, {"%X", printf_HEX},
+		{"%S", printf_exclusive_string}, {"%p", printf_pointer}
+	};
 
-	va_start(arguments, format), buffer = malloc(sizeof(char) * 1024);
-	if (!format || !buffer || (format[i] == '%' && !format[i + 1]))
+	va_list args;
+	int i = 0, j, len = 0;
+
+	va_start(args, format);
+	if (format == NULL || (format[0] == '%' && format[1] == '\0'))
 		return (-1);
-	if (!format[i])
-		return (0);
-	for (i = 0; format && format[i]; i++)
+
+This:
+	while (format[i] != '\0')
 	{
-		if (format[i] == '%')
+		j = 13;
+		while (j >= 0)
 		{
-			if (format[i + 1] == '\0')
+			if (m[j].id[0] == format[i] && m[j].id[1] == format[i + 1])
 			{
-				free(buffer);
-				return (-1);
+				len += m[j].f(args);
+				i = i + 2;
+				goto This;
 			}
-			else
-			{
-				len++;
-			} i++;
-		} else
-			len ++;
+			j--;
+		}
+		_putchar(format[i]);
+		len++;
+		i++;
 	}
 
-	free(buffer);
+	va_end(args);
 
 	return (len);
 }
