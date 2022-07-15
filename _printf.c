@@ -1,6 +1,4 @@
 #include "main.h"
-#include <stdio.h>
-#include <stdlib.h>
 
 /**
  * _printf - formated output conversion and print data.
@@ -9,33 +7,50 @@
  */
 int _printf(const char *format, ...)
 {
-	unsigned int i = 0, len = 0;
-	va_list arguments;
-	char *buffer;
+	int i, printed = 0, printed_chars = 0;
+	int flags, width, precision, size, buff_ind = 0;
+	va_list list;
+	char buffer[BUFF_SIZE];
 
-	va_start(arguments, format), buffer = malloc(sizeof(char) * 1024);
-	if (!format || !buffer || (format[i] == '%' && !format[i + 1]))
+	if (format == NULL)
 		return (-1);
-	if (!format[i])
-		return (0);
-	for (i = 0; format && format[i]; i++)
+	va_start(list, format);
+	for (i = 0; format && format[i] != '\0'; i++)
 	{
-		if (format[i] == '%')
+		if (format[i] != '%')
 		{
-			if (format[i + 1] == '\0')
-			{
-				free(buffer);
+			buffer[buff_ind++] = format[i];
+			if (buff_ind == BUFF_SIZE)
+				print_buffer(buffer, &buff_ind);
+			printed_chars++;
+		}
+		else
+		{
+			print_buffer(buffer, &buff_ind);
+			flags = get_flags(format, &i);
+			width = get_width(format, &i, list);
+			precision = get_precision(format, 7i, list);
+			++i;
+			printed = handle_print(format, &i, list, buffer,
+					flags, width, precision, size);
+			if (printed == -1)
 				return (-1);
-			}
-			else
-			{
-				len++;
-			} i++;
-		} else
-			len++;
+			printed_chars += printed;
+		}
 	}
+	printed_buffer(buffer, &buff_ind);
+	va_end(list);
+	return (printed_chars);
+}
 
-	free(buffer);
-
-	return (len);
+/**
+ * print_buffer - prints the contents of the buffer is it exist
+ * @buffer: Array of chars
+ * @buff_ind: Index at which to add next char, represents the length
+ */
+void print_buffer(char buffer[], int *buff_ind)
+{
+	if (*buff_ind > 0)
+		write(1, &buffer[0], *buff_ind);
+	*buff_ind = 0;
 }
