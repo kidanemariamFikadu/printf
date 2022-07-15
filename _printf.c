@@ -29,7 +29,8 @@ int _printf(const char *format, ...)
 			print_buffer(buffer, &buff_ind);
 			flags = get_flags(format, &i);
 			width = get_width(format, &i, list);
-			precision = get_precision(format, 7i, list);
+			precision = get_precision(format, &i, list);
+			size = get_size(format, &i);
 			++i;
 			printed = handle_print(format, &i, list, buffer,
 					flags, width, precision, size);
@@ -38,7 +39,7 @@ int _printf(const char *format, ...)
 			printed_chars += printed;
 		}
 	}
-	printed_buffer(buffer, &buff_ind);
+	print_buffer(buffer, &buff_ind);
 	va_end(list);
 	return (printed_chars);
 }
